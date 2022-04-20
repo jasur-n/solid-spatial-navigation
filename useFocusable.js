@@ -1,5 +1,5 @@
-import { createEffect, onCleanup, onMount } from "solid-js";
-import { SpatialNavigation } from "./SpatialNavigation";
+import { createEffect, onCleanup, onMount, createUniqueId } from 'solid-js';
+import { SpatialNavigation } from './SpatialNavigation';
 
 const noop = () => {};
 
@@ -18,37 +18,26 @@ export const useFocusableHook = ({
   onBlur = noop,
   extraProps,
 } = {}) => {
-  const onEnterPressHandler = useCallback(
-    (details) => {
-      onEnterPress(extraProps, details);
-    },
-    [onEnterPress, extraProps]
-  );
+  const onEnterPressHandler = (details) => {
+    onEnterPress(extraProps, details);
+  };
 
-  const onEnterReleaseHandler = useCallback(() => {
+  const onEnterReleaseHandler = () => {
     onEnterRelease(extraProps);
-  }, [onEnterRelease, extraProps]);
+  };
 
-  const onArrowPressHandler = useCallback(
-    (direction, details) => onArrowPress(direction, extraProps, details),
-    [extraProps, onArrowPress]
-  );
+  const onArrowPressHandler = (direction, details) =>
+    onArrowPress(direction, extraProps, details);
 
-  const onFocusHandler = useCallback(
-    (layout, details) => {
-      onFocus(layout, extraProps, details);
-    },
-    [extraProps, onFocus]
-  );
+  const onFocusHandler = (layout, details) => {
+    onFocus(layout, extraProps, details);
+  };
 
-  const onBlurHandler = useCallback(
-    (layout, details) => {
-      onBlur(layout, extraProps, details);
-    },
-    [extraProps, onBlur]
-  );
+  const onBlurHandler = (layout, details) => {
+    onBlur(layout, extraProps, details);
+  };
 
-  let ref;
+  let nodeRef;
 
   const [focused, setFocused] = createSignal(false);
   const [hasFocusedChild, setHasFocusedChild] = createSignal(false);
@@ -59,7 +48,7 @@ export const useFocusableHook = ({
    * Either using the propFocusKey passed in, or generating a random one
    */
   const focusKey = useMemo(
-    () => propFocusKey || uniqueId("sn:focusable-item-"),
+    () => propFocusKey || `sn:focusable-item-${createUniqueId()}`,
     [propFocusKey]
   );
 
@@ -70,7 +59,7 @@ export const useFocusableHook = ({
   onMount(() => {
     SpatialNavigation.addFocusable({
       focusKey,
-      node: ref,
+      node: nodeRef,
       parentFocusKey,
       preferredChildFocusKey,
       onEnterPress: onEnterPressHandler,
@@ -97,7 +86,7 @@ export const useFocusableHook = ({
 
   createEffect(() => {
     SpatialNavigation.updateFocusable(focusKey, {
-      node: ref,
+      node: nodeRef,
       preferredChildFocusKey,
       focusable,
       isFocusBoundary,
@@ -105,7 +94,7 @@ export const useFocusableHook = ({
   });
 
   return {
-    ref,
+    nodeRef,
     focusSelf,
     focused,
     hasFocusedChild,
