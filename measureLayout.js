@@ -1,4 +1,4 @@
-const getRect = (node: HTMLElement) => {
+const getRect = (node) => {
   const rect = node.getBoundingClientRect();
 
   return {
@@ -9,7 +9,7 @@ const getRect = (node: HTMLElement) => {
   };
 };
 
-const measureLayout = (node: HTMLElement) => {
+const measureLayout = (node) => {
   const relativeNode = node && node.parentElement;
 
   if (node && relativeNode) {
