@@ -1,4 +1,5 @@
 import { createEffect, onCleanup, onMount, createUniqueId } from 'solid-js';
+
 import { SpatialNavigation } from './SpatialNavigation';
 
 const noop = () => {};
