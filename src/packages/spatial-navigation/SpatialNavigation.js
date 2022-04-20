@@ -1,12 +1,4 @@
-import {
-  first,
-  sortBy,
-  findKey,
-  forEach,
-  forOwn,
-  throttle,
-  difference,
-} from 'lodash';
+import { sortBy, findKey, forEach, forOwn, throttle, difference } from 'lodash';
 
 import measureLayout from './measureLayout';
 
@@ -52,7 +44,7 @@ const getChildClosestToOrigin = (children) => {
     ({ layout }) => Math.abs(layout.left) + Math.abs(layout.top)
   );
 
-  return first(childrenClosestToOrigin);
+  return childrenClosestToOrigin[0];
 };
 
 class SpatialNavigation {
@@ -731,7 +723,7 @@ class SpatialNavigation {
         focusKey
       );
 
-      const nextComponent = first(sortedSiblings);
+      const nextComponent = sortedSiblings[0];
 
       this.log(
         'smartNavigate',
