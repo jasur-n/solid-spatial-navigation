@@ -1,19 +1,17 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
-// eslint-disable-next-line import/no-extraneous-dependencies
+import { createEffect, createSignal, onMount } from 'solid-js';
 import { styled } from 'solid-styled-components';
-import { shuffle } from 'lodash';
+
 import {
   useFocusable,
   init,
   FocusContext,
 } from './packages/spatial-navigation';
-import { createEffect, createSignal, onMount } from 'solid-js';
 
 init({
   debug: true,
 });
 
-const rows = shuffle([
+const rows = [
   {
     title: 'Recommended',
   },
@@ -29,7 +27,7 @@ const rows = shuffle([
   {
     title: 'Sport',
   },
-]);
+];
 
 const assets = [
   {
@@ -100,7 +98,18 @@ const MenuWrapper = styled.div`
 `;
 
 function Menu({ focusKey: focusKeyParam }) {
-  const { setRef, focusSelf, hasFocusedChild, focusKey } = useFocusable({
+  const {
+    setRef,
+    focusSelf,
+    hasFocusedChild,
+    focusKey,
+    focused
+    // setFocus, -- to set focus manually to some focusKey
+    // navigateByDirection, -- to manually navigate by direction
+    // pause, -- to pause all navigation events
+    // resume, -- to resume all navigation events
+    // updateAllLayouts -- to force update all layouts when needed
+  } = useFocusable({
     focusable: true,
     saveLastFocusedChild: false,
     trackChildren: true,
@@ -118,7 +127,7 @@ function Menu({ focusKey: focusKeyParam }) {
 
   onMount(focusSelf);
 
-  createEffect(()=>console.log(hasFocusedChild()))
+  createEffect(() => console.log(focused()));
 
   return (
     <FocusContext.Provider value={focusKey()}>

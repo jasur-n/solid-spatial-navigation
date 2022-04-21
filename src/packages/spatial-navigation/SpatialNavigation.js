@@ -1092,6 +1092,8 @@ class SpatialNavigationService {
     this.setCurrentFocusedKey(newFocusKey, focusDetails);
     this.updateParentsHasFocusedChild(newFocusKey, focusDetails);
     this.updateParentsLastFocusedChild(lastFocusedKey);
+
+    console.log(this.parentsHavingFocusedChild);
   }
 
   updateAllLayouts() {

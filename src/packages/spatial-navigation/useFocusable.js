@@ -7,8 +7,6 @@ import {
   createUniqueId,
 } from 'solid-js';
 
-import { uniqueId } from 'lodash';
-
 import { SpatialNavigation } from './SpatialNavigation';
 import { useFocusContext } from './useFocusedContext';
 
@@ -59,11 +57,12 @@ export const useFocusable = ({
    * Either using the propFocusKey passed in, or generating a random one
    */
   const focusKey = createMemo(
-    () => propFocusKey || uniqueId('sn:focusable-item')
+    () => propFocusKey || `sn:focusable-item${createUniqueId()}`
   );
 
   const focusSelf = () => {
-    SpatialNavigation.setFocus(focusKey);
+    console.log('self-focusing')
+    SpatialNavigation.setFocus(focusKey());
   };
 
   onMount(() => {
