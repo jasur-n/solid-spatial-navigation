@@ -1,10 +1,20 @@
-import { createEffect, onCleanup, onMount, createUniqueId } from 'solid-js';
+import {
+  createSignal,
+  createMemo,
+  createEffect,
+  onCleanup,
+  onMount,
+  createUniqueId,
+} from 'solid-js';
+
+import { uniqueId } from 'lodash';
 
 import { SpatialNavigation } from './SpatialNavigation';
+import { useFocusContext } from './useFocusedContext';
 
 const noop = () => {};
 
-export const useFocusableHook = ({
+export const useFocusable = ({
   focusable = true,
   saveLastFocusedChild = true,
   trackChildren = false,
@@ -38,7 +48,7 @@ export const useFocusableHook = ({
     onBlur(layout, extraProps, details);
   };
 
-  let nodeRef;
+  const [ref, setRef] = createSignal();
 
   const [focused, setFocused] = createSignal(false);
   const [hasFocusedChild, setHasFocusedChild] = createSignal(false);
@@ -48,19 +58,18 @@ export const useFocusableHook = ({
   /**
    * Either using the propFocusKey passed in, or generating a random one
    */
-  const focusKey = useMemo(
-    () => propFocusKey || `sn:focusable-item-${createUniqueId()}`,
-    [propFocusKey]
+  const focusKey = createMemo(
+    () => propFocusKey || uniqueId('sn:focusable-item')
   );
 
-  const focusSelf = useCallback(() => {
+  const focusSelf = () => {
     SpatialNavigation.setFocus(focusKey);
-  }, [focusKey]);
+  };
 
   onMount(() => {
     SpatialNavigation.addFocusable({
-      focusKey,
-      node: nodeRef,
+      focusKey: focusKey(),
+      node: ref(),
       parentFocusKey,
       preferredChildFocusKey,
       onEnterPress: onEnterPressHandler,
@@ -81,13 +90,13 @@ export const useFocusableHook = ({
 
   onCleanup(() => {
     SpatialNavigation.removeFocusable({
-      focusKey,
+      focusKey: focusKey(),
     });
   });
 
   createEffect(() => {
-    SpatialNavigation.updateFocusable(focusKey, {
-      node: nodeRef,
+    SpatialNavigation.updateFocusable(focusKey(), {
+      node: ref(),
       preferredChildFocusKey,
       focusable,
       isFocusBoundary,
@@ -95,7 +104,8 @@ export const useFocusableHook = ({
   });
 
   return {
-    nodeRef,
+    ref,
+    setRef,
     focusSelf,
     focused,
     hasFocusedChild,
