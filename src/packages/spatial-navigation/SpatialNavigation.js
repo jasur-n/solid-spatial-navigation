@@ -47,7 +47,7 @@ const getChildClosestToOrigin = (children) => {
   return childrenClosestToOrigin[0];
 };
 
-class SpatialNavigation {
+class SpatialNavigationService {
   #focusableComponents;
 
   /**
