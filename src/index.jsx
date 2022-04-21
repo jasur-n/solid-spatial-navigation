@@ -2,5 +2,6 @@
 import { render } from "solid-js/web";
 
 import App from "./App";
+import NorginApp from "./NorginApp";
 
-render(() => <App />, document.getElementById("root"));
+render(() => <NorginApp />, document.getElementById("root"));

@@ -8,16 +8,12 @@ import {
 init({ debug: false });
 
 function Button() {
-  const { ref, setRef, focused, focusKey, focusSelf, setFocus } =
-    useFocusable();
-
-  createEffect(() => console.log(focused()));
+  const focusable = useFocusable();
 
   return (
     <button
-      onClick={() => setFocus(focusKey)}
-      ref={(el) => setRef(el)}
-      className={focused() ? 'button-focused' : 'button'}
+      ref={(el) => focusable.setRef(el)}
+      className={focusable.focused() ? 'button-focused' : 'button'}
     >
       Press me
     </button>
@@ -25,13 +21,14 @@ function Button() {
 }
 
 function App() {
-  const { setRef, focusKey } = useFocusable({
-    focusKey: 'app',
+  const focusable = useFocusable({
+    focusKey: 'SN:ROOT',
   });
+
   return (
-    <FocusContext.Provider value={focusKey}>
+    <FocusContext.Provider value={focusable.focusKey}>
       <>
-        <div ref={(el) => setRef(el)}>Solid App</div>
+        <div ref={(el) => focusable.setRef(el)}>Solid App</div>
         <Button />
       </>
     </FocusContext.Provider>
