@@ -1,4 +1,12 @@
-import { sortBy, findKey, forEach, forOwn, throttle, difference } from 'lodash';
+import {
+  filter,
+  sortBy,
+  findKey,
+  forEach,
+  forOwn,
+  throttle,
+  difference,
+} from 'lodash';
 
 import measureLayout from './measureLayout';
 
@@ -48,53 +56,6 @@ const getChildClosestToOrigin = (children) => {
 };
 
 class SpatialNavigationService {
-  #focusableComponents;
-
-  /**
-   * Focus key of the currently focused element
-   */
-  #focusKey;
-
-  /**
-   * This collection contains focus keys of the elements that are having a child focused
-   * Might be handy for styling of certain parent components if their child is focused.
-   */
-  #parentsHavingFocusedChild;
-
-  #enabled;
-
-  /**
-   * Throttling delay for key presses in milliseconds
-   */
-  #throttle;
-
-  /**
-   * Enables/disables throttling feature
-   */
-  #throttleKeypresses;
-
-  /**
-   * Storing pressed keys counter by the eventType
-   */
-  #pressedKeys;
-
-  /**
-   * Flag used to block key events from this service
-   */
-  #paused;
-
-  #keyDownEventListener;
-
-  #keyDownEventListenerThrottled;
-
-  #keyUpEventListener;
-
-  #keyMap;
-
-  #debug;
-
-  #logIndex;
-
   /**
    * Used to determine the coordinate that will be used to filter items that are over the "edge"
    */
@@ -679,7 +640,7 @@ class SpatialNavigationService {
       /**
        * Get only the siblings with the coords on the way of our moving direction
        */
-      const siblings = this.focusableComponents.filter((component) => {
+      const siblings = filter(this.focusableComponents, (component) => {
         if (
           component.parentFocusKey === parentFocusKey &&
           component.focusable
@@ -786,7 +747,8 @@ class SpatialNavigationService {
       return targetFocusKey;
     }
 
-    const children = this.focusableComponents.filter(
+    const children = filter(
+      this.focusableComponents,
       (component) =>
         component.parentFocusKey === targetFocusKey && component.focusable
     );
