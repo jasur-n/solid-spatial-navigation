@@ -8,7 +8,7 @@ import {
 } from './packages/spatial-navigation';
 
 init({
-  debug: true,
+  debug: false,
 });
 
 const rows = [
