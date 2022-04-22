@@ -127,8 +127,6 @@ function Menu({ focusKey: focusKeyParam }) {
 
   onMount(focusSelf);
 
-  createEffect(() => console.log(focused()));
-
   return (
     <FocusContext.Provider value={focusKey()}>
       <MenuWrapper ref={ref} hasFocusedChild={hasFocusedChild()}>

@@ -3,7 +3,6 @@ import {
   createMemo,
   createEffect,
   onCleanup,
-  onMount,
   createUniqueId,
 } from 'solid-js';
 
@@ -63,30 +62,27 @@ export const useFocusable = ({
   );
 
   const focusSelf = () => {
-    console.log('self-focusing');
     SpatialNavigation.setFocus(focusKey());
   };
 
-  onMount(() => {
-    SpatialNavigation.addFocusable({
-      focusKey: focusKey(),
-      node: ref(),
-      parentFocusKey,
-      preferredChildFocusKey,
-      onEnterPress: onEnterPressHandler,
-      onEnterRelease: onEnterReleaseHandler,
-      onArrowPress: onArrowPressHandler,
-      onFocus: onFocusHandler,
-      onBlur: onBlurHandler,
-      onUpdateFocus: (isFocused = false) => setFocused(isFocused),
-      onUpdateHasFocusedChild: (isFocused = false) =>
-        setHasFocusedChild(isFocused),
-      saveLastFocusedChild,
-      trackChildren,
-      isFocusBoundary,
-      autoRestoreFocus,
-      focusable,
-    });
+  SpatialNavigation.addFocusable({
+    focusKey: focusKey(),
+    node: ref(),
+    parentFocusKey,
+    preferredChildFocusKey,
+    onEnterPress: onEnterPressHandler,
+    onEnterRelease: onEnterReleaseHandler,
+    onArrowPress: onArrowPressHandler,
+    onFocus: onFocusHandler,
+    onBlur: onBlurHandler,
+    onUpdateFocus: (isFocused = false) => setFocused(isFocused),
+    onUpdateHasFocusedChild: (isFocused = false) =>
+      setHasFocusedChild(isFocused),
+    saveLastFocusedChild,
+    trackChildren,
+    isFocusBoundary,
+    autoRestoreFocus,
+    focusable,
   });
 
   onCleanup(() => {
