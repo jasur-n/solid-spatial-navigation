@@ -1,53 +1,11 @@
-# Norigin Spatial Navigation
-Norigin Spatial Navigation is an open-source library that enables navigating between focusable elements built with [ReactJS](https://reactjs.org/) based application software.
-To be used while developing applications that require key navigation (directional navigation) on Web-browser Apps and other Browser based Smart TVs and Connected TVs.
-Our goal is to make navigation on websites & apps easy, using React Javascript Framework and React Hooks.
-Navigation can be controlled by your keyboard (browsers) or Remote Controls (Smart TV or Connected TV).
-Software developers only need to initialise the service, add the Hook to components that are meant to be focusable and set the initial focus.
-The Spatial Navigation library will automatically determine which components to focus next while navigating with the directional keys. We keep the library light, simple, and with minimal third-party dependencies.
-
-[![npm version](https://badge.fury.io/js/%40noriginmedia%2Fnorigin-spatial-navigation.svg)](https://badge.fury.io/js/%40noriginmedia%2Fnorigin-spatial-navigation)
-
-# Illustrative Demo
-Norigin Spatial Navigation can be used while working with Key Navigation and React JS.
-This library allows you to navigate across or focus on all navigable components while browsing.
-For example: hyperlinks, buttons, menu items or any interactible part of the User Interface according to the spatial location on the screen.
-
-![Example](norigin-spatial-navigation.gif)
-
-[Example Source](https://github.com/NoriginMedia/Norigin-Spatial-Navigation/blob/master/src/App.tsx)
-
-# Supported Devices
-The Norigin Spatial Navigation library is theoretically intended to work on any web-based platform such as Browsers and Smart TVs.
-For as long as the UI/UX is built with the React Framework, it works on the Samsung Tizen TVs, LG WebOS TVs, Hisense Vidaa TVs and a range of other Connected TVs.
-It can also be used in React Native apps on Android TV and Apple TV, however functionality will be limited.
-This library is actively used and continuously tested on many devices and updated periodically in the table below:
-
-| Platform | Name |
-|---|---|
-| Web Browsers | Chrome, Firefox, etc. |
-| Smart TVs | [Samsung Tizen](https://developer.tizen.org/?langswitch=en), [LG WebOS](https://webostv.developer.lge.com/), Hisense |
-| Other Connected TV devices | Browser Based settop boxes with Chromium, Ekioh or Webkit browsers |
-| AndroidTV, AppleTV | Only [React Native](https://reactnative.dev/docs/building-for-tv) apps, limited functionality |
-
-# Related Blogs
-1. Use & benefits of using the Norigin Spatial Navigation library on Smart TVs [here](https://medium.com/p/77ed944d7be7).
-
-# Changelog
-A list of changes for all the versions for the Norigin Spatial Navigation:
-[CHANGELOG.md](https://github.com/NoriginMedia/Norigin-Spatial-Navigation/blob/master/CHANGELOG.md)
+# Solid Spatial Navigation
+This is a SolidJS implementation of [Norigin Spatial Navigation](https://github.com/NoriginMedia/Norigin-Spatial-Navigation) library.
 
 # Table of Contents
-* [Installation](#installation)
 * [Usage](#usage)
 * [API](#api)
 * [Technical details and concepts](#technical-details-and-concepts)
-* [Migration from v2](#migration-from-v2-hoc-based-to-v3-hook-based)
 
-# Installation
-```bash
-npm i @noriginmedia/norigin-spatial-navigation --save
-```
 
 # Usage
 ## Initialization
@@ -438,121 +396,6 @@ the navigation between these components. The calculation is performed according 
 measures the coordinate of the current component and all components in the direction of the navigation, and determines the
 best path to pass the focus to the next component.
 
-# Migration from v2 (HOC based) to v3 (Hook based)
-## Reasons
-The main reason to ~~finally~~ migrate to Hooks is the deprecation of the `recompose` library that was a backbone for the old
-HOC implementation. As well as the deprecation of the `findDOMNode` API. It's been quite a while since Hooks were first
-introduced in React, but we were hesitating of migrating to Hooks since it would make the library usage a bit more verbose.
-However, recently there has been even more security reasons to migrate away from `recompose`, so we decided that it is time
-to say goodbye to HOC and accept certain drawbacks of the Hook implementation.
-Here are some of the challenges encountered during the migration process:
 
-### Getting node reference
-HOC implementation used a `findDOMNode` API to find a reference to a current DOM element wrapped with the HOC:
-```js
-const node = SpatialNavigation.isNativeMode() ? this : findDOMNode(this);
-```
-Note that `this` was pointing to an actual component instance even when it was called inside `lifecycle` HOC from `recompose`
-allowing to always find the top-level DOM element, without any additional code required to point to a specific DOM node.
-It was a nice "magic" side effect of the HOC implementation, which is now getting deprecated.
 
-In the new Hook implementation we are using the recommended `ref` API. It makes a usage of the library a bit more verbose
-since now you always have to specify which DOM element is considered a "focusable" area, because this reference is used
-by the library to calculate the node's coordinates and size. [Example above](#ref-required)
 
-### Passing `parentFocusKey` down the tree
-Another big challenge was to find a good way of passing the `parentFocusKey` down the Focusable Tree, so every focusable
-child component would always know its parent component key, in order to enable certain "tree-based" features described [here](#tree-hierarchy-of-focusable-components).
-In the old HOC implementation it was achieved via a combination of `getContext` and `withContext` HOCs. Former one was
-receiving the `parentFocusKey` from its parent no matter how deep it was in the component tree, and the latter one was
-providing its own `focusKey` as `parentFocusKey` for its children components.
-
-In modern React, the only recommended Context API is using Context Providers and Consumers (or `useContext` hook).
-While you can easily receive the Context value via `useContext`, the only way to provide the Context down the tree is via
-a JSX component `Context.Provider`. This requires some additional code in case you have a Focusable Container component.
-In order to provide the `parentFocusKey` down the tree, you have to wrap your children components with a `FocusContext.Provider`
-and provide a current `focusKey` as the context value. [Example here](#wrapping-leaf-components-with-a-focusable-container)
-
-## Examples
-### Migrating a [leaf](#making-your-component-focusable) focusable component
-#### HOC Props and Config vs Hook Params
-```jsx
-import {withFocusable} from '@noriginmedia/norigin-spatial-navigation';
-
-// Component ...
-
-const FocusableComponent = withFocusable({
-  trackChildren: true,
-  forgetLastFocusedChild: true
-})(Component);
-
-const ParentComponent = (props) => (<View>
-  ...
-  <FocusableComponent
-    trackChildren
-    forgetLastFocusedChild
-    focusKey={'FOCUSABLE_COMPONENT'}
-    onEnterPress={props.onItemPress}
-    autoRestoreFocus={false}
-  />
-  ...
-</View>);
-```
-
-Please note that **most** of the features/props could have been passed as either direct JSX `props` to the Focusable Component
-or as an config object passed to the `withFocusable` HOC. It provided certain level of flexibility, while also adding some
-confusion as to what takes priority if you pass the same option to both the `prop` and a HOC config.
-
-In the new Hook implementation options can only be passed as a [Hook Params](#hook-params):
-
-```jsx
-const {/* hook output */ } = useFocusable({
-  trackChildren: true,
-  saveLastFocusedChild: false,
-  onEnterPress: () => {},
-  focusKey: 'FOCUSABLE_COMPONENT'
-});
-```
-
-#### HOC props passed to the wrapped component vs Hook output values
-HOC was enhancing the wrapped component with certain new `props` such as `focused` etc.:
-```jsx
-import {withFocusable} from '@noriginmedia/norigin-spatial-navigation';
-
-const Component = ({focused}) => (<View>
-  <View style={focused ? styles.focusedStyle : styles.defaultStyle} />
-</View>);
-
-const FocusableComponent = withFocusable()(Component);
-```
-
-Hook will provide all these values as the return object of the hook:
-
-```jsx
-const { focused, focusSelf, ref, ...etc } = useFocusable({/* hook params */ });
-```
-
-The only additional step when migrating from HOC to Hook (apart from changing `withFocusable` to `useFocusable` implementation)
-is to link the DOM element with the `ref` from the Hook as seen in this [example](#making-your-component-focusable).
-While it requires a bit of extra code compared to the HOC version, it also provides a certain level of flexibility if
-you want to make only a certain part of your UI component to act as a "focusable" area.
-
-Please also note that some params and output values has been renamed. [CHANGELOG](#changelog)
-
-### Migrating a [container](#wrapping-leaf-components-with-a-focusable-container) focusable component
-In the old HOC implementation there was no additional requirements for the Focusable Container to provide its own `focusKey`
-down the Tree as a `parentFocusKey` for its children components.
-In the Hook implementation it is required to wrap your children components with a `FocusContext.Provider` as seen in
-this [example](#wrapping-leaf-components-with-a-focusable-container).
-
-# Development
-```bash
-npm i
-npm start
-```
-
-# Contributing
-Please follow the [Contribution Guide](https://github.com/NoriginMedia/Norigin-Spatial-Navigation/blob/master/CONTRIBUTING.md)
-
-# License
-**MIT Licensed**
