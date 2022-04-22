@@ -1,4 +1,4 @@
-export const useRef = (initialValue) => {
+export const createRef = (initialValue) => {
   let ref = initialValue;
 
   const getSet = (value) => {

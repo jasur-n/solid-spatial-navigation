@@ -10,6 +10,8 @@ import {
 import { SpatialNavigation } from './SpatialNavigation';
 import { useFocusContext } from './useFocusedContext';
 
+import { createRef } from '../../hooks/createRef';
+
 const noop = () => {};
 
 export const useFocusable = ({
@@ -46,7 +48,7 @@ export const useFocusable = ({
     onBlur(layout, extraProps, details);
   };
 
-  const [ref, setRef] = createSignal();
+  const ref = createRef();
 
   const [focused, setFocused] = createSignal(false);
   const [hasFocusedChild, setHasFocusedChild] = createSignal(false);
@@ -61,7 +63,7 @@ export const useFocusable = ({
   );
 
   const focusSelf = () => {
-    console.log('self-focusing')
+    console.log('self-focusing');
     SpatialNavigation.setFocus(focusKey());
   };
 
@@ -104,7 +106,6 @@ export const useFocusable = ({
 
   return {
     ref,
-    setRef,
     focusSelf,
     focused,
     hasFocusedChild,

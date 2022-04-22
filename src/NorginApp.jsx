@@ -81,9 +81,9 @@ const MenuItemBox = styled.div`
 `;
 
 function MenuItem() {
-  const { setRef, focused } = useFocusable();
+  const { ref, focused } = useFocusable();
 
-  return <MenuItemBox ref={(el) => setRef(el)} focused={focused()} />;
+  return <MenuItemBox ref={ref} focused={focused()} />;
 }
 
 const MenuWrapper = styled.div`
@@ -99,11 +99,11 @@ const MenuWrapper = styled.div`
 
 function Menu({ focusKey: focusKeyParam }) {
   const {
-    setRef,
+    ref,
     focusSelf,
     hasFocusedChild,
     focusKey,
-    focused
+    focused,
     // setFocus, -- to set focus manually to some focusKey
     // navigateByDirection, -- to manually navigate by direction
     // pause, -- to pause all navigation events
@@ -131,7 +131,7 @@ function Menu({ focusKey: focusKeyParam }) {
 
   return (
     <FocusContext.Provider value={focusKey()}>
-      <MenuWrapper ref={(el) => setRef(el)} hasFocusedChild={hasFocusedChild()}>
+      <MenuWrapper ref={ref} hasFocusedChild={hasFocusedChild()}>
         <MenuItem />
         <MenuItem />
         <MenuItem />
@@ -168,7 +168,7 @@ const AssetTitle = styled.div`
 `;
 
 function Asset({ title, color, onEnterPress, onFocus }) {
-  const { setRef, focused } = useFocusable({
+  const { ref, focused } = useFocusable({
     onEnterPress,
     onFocus,
     extraProps: {
@@ -178,7 +178,7 @@ function Asset({ title, color, onEnterPress, onFocus }) {
   });
 
   return (
-    <AssetWrapper ref={(el) => setRef(el)}>
+    <AssetWrapper ref={ref}>
       <AssetBox color={color} focused={focused()} />
       <AssetTitle>{title}</AssetTitle>
     </AssetWrapper>
@@ -212,7 +212,7 @@ const ContentRowScrollingContent = styled.div`
 `;
 
 function ContentRow({ title: rowTitle, onAssetPress, onFocus }) {
-  const { setRef, focusKey } = useFocusable({
+  const { ref, focusKey } = useFocusable({
     onFocus,
   });
 
@@ -227,7 +227,7 @@ function ContentRow({ title: rowTitle, onAssetPress, onFocus }) {
 
   return (
     <FocusContext.Provider value={focusKey()}>
-      <ContentRowWrapper ref={(el) => setRef(el)}>
+      <ContentRowWrapper ref={ref}>
         <ContentRowTitle>{rowTitle}</ContentRowTitle>
         <ContentRowScrollingWrapper ref={scrollingRef}>
           <ContentRowScrollingContent>
@@ -297,7 +297,7 @@ const ScrollingRows = styled.div`
 `;
 
 function Content() {
-  const { ref, setRef, focusKey } = useFocusable();
+  const { ref, focusKey } = useFocusable();
 
   const [selectedAsset, setSelectedAsset] = createSignal(null);
 
@@ -326,7 +326,7 @@ function Content() {
               : 'Press "Enter" to select an asset'}
           </SelectedItemTitle>
         </SelectedItemWrapper>
-        <ScrollingRows ref={(el) => setRef(el)}>
+        <ScrollingRows ref={ref}>
           <div>
             {rows.map(({ title }) => (
               <ContentRow
