@@ -5,7 +5,7 @@ import {
   useFocusable,
   init,
   FocusContext,
-} from './packages/spatial-navigation';
+} from './spatial-navigation';
 
 init({
   debug: false,

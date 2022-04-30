@@ -1,9 +1,4 @@
-import { createEffect, onMount } from 'solid-js';
-import {
-  init,
-  useFocusable,
-  FocusContext,
-} from './packages/spatial-navigation';
+import { init, useFocusable, FocusContext } from './spatial-navigation';
 
 init({ debug: false });
 

@@ -1,15 +1,9 @@
-import {
-  createSignal,
-  createMemo,
-  createEffect,
-  onCleanup,
-  createUniqueId,
-} from 'solid-js';
+import { createSignal, createMemo, createEffect, onCleanup, createUniqueId } from 'solid-js';
 
 import { SpatialNavigation } from './SpatialNavigation';
 import { useFocusContext } from './useFocusedContext';
 
-import { createRef } from '../../hooks/createRef';
+import { useRef } from '@/hooks/useRef';
 
 const noop = () => {};
 
@@ -36,8 +30,7 @@ export const useFocusable = ({
     onEnterRelease(extraProps);
   };
 
-  const onArrowPressHandler = (direction, details) =>
-    onArrowPress(direction, extraProps, details);
+  const onArrowPressHandler = (direction, details) => onArrowPress(direction, extraProps, details);
 
   const onFocusHandler = (layout, details) => {
     onFocus(layout, extraProps, details);
@@ -47,7 +40,7 @@ export const useFocusable = ({
     onBlur(layout, extraProps, details);
   };
 
-  const ref = createRef();
+  const ref = useRef();
 
   const [focused, setFocused] = createSignal(false);
   const [hasFocusedChild, setHasFocusedChild] = createSignal(false);
@@ -57,9 +50,7 @@ export const useFocusable = ({
   /**
    * Either using the propFocusKey passed in, or generating a random one
    */
-  const focusKey = createMemo(
-    () => propFocusKey || `sn:focusable-item${createUniqueId()}`
-  );
+  const focusKey = createMemo(() => propFocusKey || `sn:focusable-item${createUniqueId()}`);
 
   const focusSelf = () => {
     SpatialNavigation.setFocus(focusKey());
@@ -76,8 +67,7 @@ export const useFocusable = ({
     onFocus: onFocusHandler,
     onBlur: onBlurHandler,
     onUpdateFocus: (isFocused = false) => setFocused(isFocused),
-    onUpdateHasFocusedChild: (isFocused = false) =>
-      setHasFocusedChild(isFocused),
+    onUpdateHasFocusedChild: (isFocused = false) => setHasFocusedChild(isFocused),
     saveLastFocusedChild,
     trackChildren,
     isFocusBoundary,
